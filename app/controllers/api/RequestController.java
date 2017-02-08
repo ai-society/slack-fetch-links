@@ -19,7 +19,7 @@ public class RequestController extends Controller {
         System.out.println(jsonRequestBody);
 
         if (jsonRequestBody == null)
-            return badRequest("File upload error");
+            return badRequest(request().body().toString());
         else {
 
             /*
