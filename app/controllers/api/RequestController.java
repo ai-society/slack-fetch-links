@@ -42,7 +42,7 @@ public class RequestController extends Controller {
             SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
             request.save();
             //Request specifiedEpisode = Episode.find.byId(episodeId);
-            return ok("Thanks " + userName + "!, Happy Hacking");
+            return ok("Thanks " + userName + "!, Happy Hacking" + "\n" + text);
         }
     }
 
