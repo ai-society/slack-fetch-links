@@ -34,10 +34,12 @@ public class RequestController extends Controller {
             if(!token.equals(new String("wygKn3F20sCyYhgfbLTkRW7I")))
                 return unauthorized("Invalid Token");
 
-            String link = extractUrls(text).get(0);
+            List<String> links = extractUrls(text);
 
-            if(link == null)
+            if(links == null)
                 return badRequest("No link found");
+
+            String link = links.get(0);
 
             SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
             request.save();
