@@ -18,8 +18,8 @@ public class RequestController extends Controller {
 
         System.out.println(jsonRequestBody);
 
-        if (jsonRequestBody == null)
-            return badRequest(request().body().toString());
+        if (true)
+            return badRequest(request().body().asFormUrlEncoded().toString());
         else {
 
             /*
