@@ -1,5 +1,3 @@
-import play.ebean.sbt.PlayEbean
-
 name := """slack-fetch-bot"""
 
 version := "1.0-SNAPSHOT"
