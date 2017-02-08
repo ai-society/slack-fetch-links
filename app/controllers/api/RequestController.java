@@ -7,6 +7,11 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by scvalencia606 on 2/8/17.
@@ -14,31 +19,53 @@ import java.net.MalformedURLException;
 public class RequestController extends Controller {
 
     public Result create() {
-        JsonNode jsonRequestBody = request().body().asJson();
 
-        System.out.println(jsonRequestBody);
+        Map<String, String[]> postValues = request().body().asFormUrlEncoded();
 
-        if (true)
-            return badRequest(request().body().asFormUrlEncoded().toString());
+        if (postValues == null)
+            return badRequest("Invalid parameters");
         else {
 
-            /*
-            * token=gIkuvaNzQIHg97ATvDxqgjtO
-                team_id=T0001
-                team_domain=example
-                channel_id=C2147483705
-                channel_name=test
-                user_id=U2147483697
-                user_name=Steve
-                command=/weather
-                text=94070
-                response_url=https://hooks.slack.com/commands/1234/5678
-             */
+            String channelName = postValues.get("channel_name")[0];
+            String text = postValues.get("text")[0];
+            String token = postValues.get("token")[0];
+            String userName = postValues.get("user_name")[0];
 
-            SlackCommandRequest request = SlackCommandRequest.create("sdfdsfsdf", "", "", jsonRequestBody.toString());
+            if(!token.equals(new String("wygKn3F20sCyYhgfbLTkRW7I")))
+                return unauthorized("Invalid Token");
+
+            String link = extractUrls(text).get(0);
+
+            if(link == null)
+                return badRequest("No link found");
+
+            SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
             request.save();
             //Request specifiedEpisode = Episode.find.byId(episodeId);
-            return ok("sa");
+            return ok(channelName + " " + userName + " " + link + " " + text);
         }
+    }
+
+    private List<String> extractUrls(String input) {
+        List<String> result = new ArrayList<String>();
+
+        Pattern pattern = Pattern.compile(
+            "\\b(((ht|f)tp(s?)\\:\\/\\/|~\\/|\\/)|www.)" +
+                "(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov" +
+                "|mil|biz|info|mobi|name|aero|jobs|museum" +
+                "|travel|[a-z]{2}))(:[\\d]{1,5})?" +
+                "(((\\/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?" +
+                "((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
+                "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)" +
+                "(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
+                "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*" +
+                "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b");
+
+        Matcher matcher = pattern.matcher(input);
+        while (matcher.find()) {
+            result.add(matcher.group());
+        }
+
+        return result;
     }
 }
