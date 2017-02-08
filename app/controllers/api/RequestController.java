@@ -31,15 +31,14 @@ public class RequestController extends Controller {
             String token = postValues.get("token")[0];
             String userName = postValues.get("user_name")[0];
 
-            if(!token.equals(new String("wygKn3F20sCyYhgfbLTkRW7I")))
+            if(!token.equals("wygKn3F20sCyYhgfbLTkRW7I"))
                 return unauthorized("Invalid Token");
 
-            List<String> links = extractUrls(text);
+            List<String> links = extractLinks(text);
+            String link = "";
 
-            if(links == null)
-                return badRequest("No link found");
-
-            String link = links.get(0);
+            if(links.size() != 0)
+                link = links.get(0);
 
             SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
             request.save();
@@ -48,7 +47,7 @@ public class RequestController extends Controller {
         }
     }
 
-    private List<String> extractUrls(String input) {
+    private List<String> extractLinks(String input) {
         List<String> result = new ArrayList<String>();
 
         Pattern pattern = Pattern.compile(
@@ -64,9 +63,9 @@ public class RequestController extends Controller {
                 "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b");
 
         Matcher matcher = pattern.matcher(input);
-        while (matcher.find()) {
+
+        while (matcher.find())
             result.add(matcher.group());
-        }
 
         return result;
     }
