@@ -15,6 +15,7 @@ import utils.URLUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,23 +42,6 @@ public class RequestController extends Controller {
 
             new HttpPostToSlack(channelName, text, userName, responseURL).start();
             return ok();
-
-            /*
-
-            String link = URLUtils.extractLinks(text);
-
-            SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
-            request.save();
-
-            ObjectNode jsonNode = Json.newObject();
-
-            jsonNode.put("response_type", "in_channel");
-            jsonNode.put("text", "Thanks " + userName + "!, Happy Hacking" + "\n" + text);
-            jsonNode.put("unfurl_links", true);
-            jsonNode.put("response_url", responseURL);
-
-            return ok(jsonNode);
-            */
         }
     }
 
@@ -67,7 +51,6 @@ class HttpPostToSlack extends Thread {
 
     String channelName;
     String text;
-    String token;
     String userName;
     String responseURL;
 
@@ -83,19 +66,31 @@ class HttpPostToSlack extends Thread {
     public void run() {
 
         String link = URLUtils.extractLinks(text);
+        String responseMessage = "";
 
         SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
-        request.save();
+        List<SlackCommandRequest> sameLinkResources = SlackCommandRequest.searchByLink(link);
+
+        if(sameLinkResources.size() == 0) {
+            responseMessage = "Thanks " + userName + "!, Happy Hacking" + "\n" + text;
+            request.save();
+        } else {
+            SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
+
+            responseMessage = "Thanks " + userName + "!, Happy Hacking" + "\n" + "The resource link was already saved.";
+            responseMessage += "\n" + "It was posted by " + sameLinkResource.getUserName();
+        }
 
         ObjectNode jsonNode = Json.newObject();
 
         jsonNode.put("response_type", "in_channel");
-        jsonNode.put("text", "Thanks " + userName + "!, Happy Hacking" + "\n" + text);
+        jsonNode.put("text", responseMessage);
         jsonNode.put("unfurl_links", true);
         jsonNode.put("response_url", responseURL);
 
         HttpClient httpClient    = HttpClientBuilder.create().build();
         HttpPost post          = new HttpPost(responseURL);
+
         try {
             StringEntity postingString = new StringEntity(jsonNode.toString());
             post.setEntity(postingString);

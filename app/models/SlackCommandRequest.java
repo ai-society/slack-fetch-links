@@ -5,6 +5,7 @@ import play.data.validation.Constraints;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by scvalencia606 on 2/8/17.
@@ -51,4 +52,31 @@ public class SlackCommandRequest extends Model {
         return request;
     }
 
+    public static List<SlackCommandRequest> searchByLink(String link){
+        return find.where().ieq("link", "%" + link + "%").findList();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getText() {
+        return text;
+    }
 }
