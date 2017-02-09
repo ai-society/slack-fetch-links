@@ -45,6 +45,13 @@ public class RequestController extends Controller {
         }
     }
 
+    public Result test() {
+
+        System.out.println(request().body().asJson());
+
+        return ok(request().body().asJson());
+    }
+
 }
 
 class HttpPostToSlack extends Thread {
@@ -71,13 +78,17 @@ class HttpPostToSlack extends Thread {
         SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
         List<SlackCommandRequest> sameLinkResources = SlackCommandRequest.searchByLink(link);
 
+        for(SlackCommandRequest slackCommandRequest : sameLinkResources)
+        System.out.println(slackCommandRequest.getLink());
+
         if(sameLinkResources.size() == 0) {
             responseMessage = "Thanks " + userName + "!, Happy Hacking" + "\n" + text;
             request.save();
         } else {
             SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
 
-            responseMessage = "Thanks " + userName + "!, Happy Hacking" + "\n" + "The resource link was already saved.";
+            responseMessage = "Thanks " + userName + "!, Happy Hacking";
+            responseMessage += "\n" + "The resource link was already saved.";
             responseMessage += "\n" + "It was posted by " + sameLinkResource.getUserName();
         }
 

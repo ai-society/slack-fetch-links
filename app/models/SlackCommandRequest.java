@@ -53,7 +53,7 @@ public class SlackCommandRequest extends Model {
     }
 
     public static List<SlackCommandRequest> searchByLink(String link){
-        return find.where().ieq("link", "%" + link + "%").findList();
+        return find.where().ilike("link", "%" + link + "%").findList();
     }
 
     public Long getId() {
