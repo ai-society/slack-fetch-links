@@ -1,11 +1,16 @@
 package controllers.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.ullink.slack.simpleslackapi.SlackSession;
+import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import models.SlackCommandRequest;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +47,14 @@ public class RequestController extends Controller {
 
             SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
             request.save();
+
+            ObjectNode jsonNode = Json.newObject();
+
+            jsonNode.put("response_type", "in_channel");
+            jsonNode.put("text", "Thanks " + userName + "!, Happy Hacking" + "\n" + text);
+
             //Request specifiedEpisode = Episode.find.byId(episodeId);
-            return ok("Thanks " + userName + "!, Happy Hacking" + "\n" + text);
+            return ok(jsonNode);
         }
     }
 
