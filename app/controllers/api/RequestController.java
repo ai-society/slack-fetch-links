@@ -73,13 +73,10 @@ class HttpPostToSlack extends Thread {
     public void run() {
 
         String link = URLUtils.extractLinks(text);
-        String responseMessage = "";
+        String responseMessage;
 
         SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
         List<SlackCommandRequest> sameLinkResources = SlackCommandRequest.searchByLink(link);
-
-        for(SlackCommandRequest slackCommandRequest : sameLinkResources)
-        System.out.println(slackCommandRequest.getLink());
 
         if(sameLinkResources.size() == 0) {
             responseMessage = "Thanks " + userName + "!, Happy Hacking" + "\n" + text;
@@ -89,7 +86,8 @@ class HttpPostToSlack extends Thread {
 
             responseMessage = "Thanks " + userName + "!, Happy Hacking";
             responseMessage += "\n" + "The resource link was already in the server.";
-            responseMessage += "\n" + "It was posted by " + sameLinkResource.getUserName();
+            responseMessage += "\n" + "It was posted by " +
+                ((userName.equals(sameLinkResource.getChannelName())) ? " you " : sameLinkResource.getUserName());
             responseMessage += "On " + sameLinkResource.getDate();
         }
 
