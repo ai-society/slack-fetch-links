@@ -1,10 +1,5 @@
 package utils;
 
-import org.nibor.autolink.LinkExtractor;
-import org.nibor.autolink.LinkSpan;
-import org.nibor.autolink.LinkType;
-
-import java.util.EnumSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,11 +9,15 @@ import java.util.regex.Pattern;
 public class URLUtils {
 
     public static String extractLinks(String text) {
-        LinkExtractor linkExtractor = LinkExtractor.builder()
-            .linkTypes(EnumSet.of(LinkType.URL, LinkType.EMAIL))
-            .build();
-        Iterable<LinkSpan> links = linkExtractor.extractLinks(text);
-        LinkSpan link = links.iterator().next();
-        return text.substring(link.getBeginIndex(), link.getEndIndex());
+        String result = "";
+        String urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)";
+        Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
+        Matcher urlMatcher = pattern.matcher(text);
+
+        if(urlMatcher.find())
+            result = text.substring(urlMatcher.start(0),
+                urlMatcher.end(0));
+
+        return result;
     }
 }
