@@ -88,8 +88,9 @@ class HttpPostToSlack extends Thread {
             SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
 
             responseMessage = "Thanks " + userName + "!, Happy Hacking";
-            responseMessage += "\n" + "The resource link was already saved.";
+            responseMessage += "\n" + "The resource link was already in the server.";
             responseMessage += "\n" + "It was posted by " + sameLinkResource.getUserName();
+            responseMessage += "On " + sameLinkResource.getDate();
         }
 
         ObjectNode jsonNode = Json.newObject();
