@@ -2,8 +2,6 @@ package controllers.api;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.SlackCommandRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -14,7 +12,6 @@ import play.mvc.Result;
 import utils.URLUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -87,8 +84,8 @@ class HttpPostToSlack extends Thread {
             responseMessage = "Thanks " + userName + "!, Happy Hacking";
             responseMessage += "\n" + "The resource link was already in the server.";
             responseMessage += "\n" + "It was posted by " +
-                ((userName.equals(sameLinkResource.getChannelName())) ? " you " : sameLinkResource.getUserName());
-            responseMessage += "On " + sameLinkResource.getDate();
+                ((userName.equals(sameLinkResource.getUserName())) ? " you " : sameLinkResource.getUserName());
+            responseMessage += " on " + sameLinkResource.getDate();
         }
 
         ObjectNode jsonNode = Json.newObject();
