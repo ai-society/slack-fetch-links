@@ -6,12 +6,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import utils.URLUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by scvalencia606 on 2/8/17.
@@ -43,10 +38,10 @@ public class RequestController extends Controller {
 
             jsonNode.put("response_type", "in_channel");
             jsonNode.put("text", "Thanks " + userName + "!, Happy Hacking" + "\n" + text);
+            jsonNode.put("unfurl_links", true);
 
             return ok(jsonNode);
         }
     }
-
 
 }
