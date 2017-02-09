@@ -1,17 +1,12 @@
 package controllers.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.ullink.slack.simpleslackapi.SlackSession;
-import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 import models.SlackCommandRequest;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.URLUtils;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +34,7 @@ public class RequestController extends Controller {
             if(!token.equals("wygKn3F20sCyYhgfbLTkRW7I"))
                 return unauthorized("Invalid Token");
 
-            List<String> links = extractLinks(text);
-            String link = "";
-
-            if(links.size() != 0)
-                link = links.get(0);
+            String link = URLUtils.extractLinks(text);
 
             SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
             request.save();
@@ -53,31 +44,9 @@ public class RequestController extends Controller {
             jsonNode.put("response_type", "in_channel");
             jsonNode.put("text", "Thanks " + userName + "!, Happy Hacking" + "\n" + text);
 
-            //Request specifiedEpisode = Episode.find.byId(episodeId);
             return ok(jsonNode);
         }
     }
 
-    private List<String> extractLinks(String input) {
-        List<String> result = new ArrayList<String>();
 
-        Pattern pattern = Pattern.compile(
-            "\\b(((ht|f)tp(s?)\\:\\/\\/|~\\/|\\/)|www.)" +
-                "(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov" +
-                "|mil|biz|info|mobi|name|aero|jobs|museum" +
-                "|travel|[a-z]{2}))(:[\\d]{1,5})?" +
-                "(((\\/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?" +
-                "((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
-                "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)" +
-                "(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?" +
-                "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*" +
-                "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b");
-
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find())
-            result.add(matcher.group());
-
-        return result;
-    }
 }
