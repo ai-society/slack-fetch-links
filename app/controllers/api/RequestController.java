@@ -82,12 +82,12 @@ class HttpPostToSlack extends Thread {
 
         if(sameLinkResources.size() == 0) {
             jsonNode.put("response_type", "in_channel");
-            responseMessage = userName + ":" + "\n" + text;
+            responseMessage = "By " + userName + ":" + "\n" + text;
             request.save();
         } else {
             SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
 
-            responseMessage = userName + ":";
+            responseMessage = "By " + userName + ":";
             responseMessage += "\n" + "The resource link was already in the server.";
             responseMessage += "\n" + "It was posted by " +
                 ((userName.equals(sameLinkResource.getUserName())) ? " you " : sameLinkResource.getUserName());
