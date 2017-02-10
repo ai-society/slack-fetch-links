@@ -76,12 +76,12 @@ class HttpPostToSlack extends Thread {
         List<SlackCommandRequest> sameLinkResources = SlackCommandRequest.searchByLink(link);
 
         if(sameLinkResources.size() == 0) {
-            responseMessage = "Thanks " + userName + "!, Happy Hacking" + "\n" + text;
+            responseMessage = userName + " upload:" + "\n" + text;
             request.save();
         } else {
             SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
 
-            responseMessage = "Thanks " + userName + "!, Happy Hacking";
+            responseMessage = userName + " upload:";
             responseMessage += "\n" + "The resource link was already in the server.";
             responseMessage += "\n" + "It was posted by " +
                 ((userName.equals(sameLinkResource.getUserName())) ? " you " : sameLinkResource.getUserName());
