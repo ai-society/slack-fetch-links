@@ -75,24 +75,26 @@ class HttpPostToSlack extends Thread {
         SlackCommandRequest request = SlackCommandRequest.create(channelName, userName, link, text);
         List<SlackCommandRequest> sameLinkResources = SlackCommandRequest.searchByLink(link);
 
+        ObjectNode jsonNode = Json.newObject();
+
+
+        jsonNode.put("unfurl_links", true);
+
         if(sameLinkResources.size() == 0) {
-            responseMessage = userName + " upload:" + "\n" + text;
+            jsonNode.put("response_type", "in_channel");
+            responseMessage = userName + ":" + "\n" + text;
             request.save();
         } else {
             SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
 
-            responseMessage = userName + " upload:";
+            responseMessage = userName + ":";
             responseMessage += "\n" + "The resource link was already in the server.";
             responseMessage += "\n" + "It was posted by " +
                 ((userName.equals(sameLinkResource.getUserName())) ? " you " : sameLinkResource.getUserName());
             responseMessage += " on " + sameLinkResource.getDate();
         }
 
-        ObjectNode jsonNode = Json.newObject();
-
-        jsonNode.put("response_type", "in_channel");
         jsonNode.put("text", responseMessage);
-        jsonNode.put("unfurl_links", true);
         jsonNode.put("response_url", responseURL);
 
         HttpClient httpClient    = HttpClientBuilder.create().build();
