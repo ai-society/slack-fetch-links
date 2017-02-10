@@ -28,16 +28,7 @@ public class RequestController extends Controller {
             return badRequest("Invalid parameters");
         else {
 
-            String channelName = postValues.get("channel_name")[0];
-            String text = postValues.get("text")[0];
-            String token = postValues.get("token")[0];
-            String userName = postValues.get("user_name")[0];
-            String responseURL = postValues.get("response_url")[0];
-
-            if(!token.equals("wygKn3F20sCyYhgfbLTkRW7I"))
-                return unauthorized("Invalid Token");
-
-            new HttpPostToSlack(channelName, text, userName, responseURL).start();
+            new HttpPostToSlack(postValues).start();
             return ok();
         }
     }
@@ -57,13 +48,20 @@ class HttpPostToSlack extends Thread {
     String text;
     String userName;
     String responseURL;
+    Map<String, String[]> postValues;
 
-    public HttpPostToSlack(String channelName, String text, String userName, String responseURL) {
+    public HttpPostToSlack(Map<String, String[]> postValues) {
+
+        String channelName = postValues.get("channel_name")[0];
+        String text = postValues.get("text")[0];
+        String userName = postValues.get("user_name")[0];
+        String responseURL = postValues.get("response_url")[0];
 
         this.channelName = channelName;
         this.text = text;
         this.userName = userName;
         this.responseURL = responseURL;
+        this.postValues = postValues;
 
     }
 
