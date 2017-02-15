@@ -80,7 +80,7 @@ class HttpPostToSlack extends Thread {
 
         if(sameLinkResources.size() == 0) {
             jsonNode.put("response_type", "in_channel");
-            responseMessage = "Thanks " + userName + ", keep sharing AI knowledge!" + "\n" + text;
+            responseMessage = "By " + userName + ":\n" + text;
             request.save();
         } else {
             SlackCommandRequest sameLinkResource = sameLinkResources.get(0);
@@ -95,8 +95,8 @@ class HttpPostToSlack extends Thread {
         jsonNode.put("text", responseMessage);
         jsonNode.put("response_url", responseURL);
 
-        HttpClient httpClient    = HttpClientBuilder.create().build();
-        HttpPost post          = new HttpPost(responseURL);
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost(responseURL);
 
         try {
             StringEntity postingString = new StringEntity(jsonNode.toString());
