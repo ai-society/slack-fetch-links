@@ -33,6 +33,10 @@ public class RequestController extends Controller {
         }
     }
 
+    public Result heartBeat() {
+        return ok();
+    }
+
     public Result test() {
 
         System.out.println(request().body().asJson());
