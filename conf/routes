@@ -4,10 +4,10 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
 
 POST    /request                    controllers.api.RequestController.create()
+
+GET     /heartbeat                  controllers.api.RequestController.heartBeat()
 
 POST    /test                       controllers.api.RequestController.test()
 
